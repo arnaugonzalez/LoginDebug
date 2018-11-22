@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">LoginDebug</string>
+    <string name="btn_send">Login</string>
+    <string name="password_text">Enter password</string>
+    <string name="username_text">Enter username</string>
+    <string name="remember_checkbox">Remember me</string>
+
 </resources>
