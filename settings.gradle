@@ -1,1 +1,1 @@
-include ':app', ':login-debug'
+include ':app', ':login-debug', ':background-debug'
