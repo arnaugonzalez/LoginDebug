@@ -12,6 +12,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
+
 import dama.upc.edu.login.event.LoginErrorEvent;
 import dama.upc.edu.login.event.LoginSuccessfulEvent;
 import dama.upc.edu.login.integration.ILoginOperationClient;
@@ -25,11 +29,13 @@ public class LoginActivity extends AppCompatActivity implements ILoginOperationC
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.activity_login);
         super.onCreate(savedInstanceState);
 
+        setContentView(R.layout.activity_login);
+
         if (this.containsNoFragments()) {
-            this.launchContentFragment(R.id.login_activity_fragment_container, this.getLoginFragment());
+            LoginFragment loginf = this.getLoginFragment();
+            this.launchContentFragment(R.id.login_activity_fragment_container, loginf);
         }
 
     }
@@ -60,6 +66,19 @@ public class LoginActivity extends AppCompatActivity implements ILoginOperationC
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
+
+        @Override
+    @Subscribe
     public void onSuccessfulLoginEvent(LoginSuccessfulEvent loginSuccessfulEvent) {
         this.userView =
                 new UserView(
@@ -78,8 +97,9 @@ public class LoginActivity extends AppCompatActivity implements ILoginOperationC
     }
 
     @Override
+    @Subscribe
     public void onErrorLoginEvent(LoginErrorEvent loginErrorEvent) {
-        Toast.makeText(getApplicationContext(), "Code " + loginErrorEvent.getCode() + ": "
-                                                + loginErrorEvent.getMsg(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), "Error Code " + loginErrorEvent.getCode() + "  "
+                                                + loginErrorEvent.getDescrip(), Toast.LENGTH_SHORT).show();
     }
 }
